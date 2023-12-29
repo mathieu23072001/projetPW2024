@@ -1,0 +1,185 @@
+<?php
+require_once("../classes/dao/DaoInterface.php");
+require_once("../classes/dao/CategorieDAO.php");
+require_once("../classes/dao/ContactDAO.php");
+
+class LicencieDAO implements DaoInterface {
+    private $connexion;
+    private CategorieDAO  $categorieDAO;
+    private ContactDAO $contactDAO;
+
+    public function __construct(Connexion $connexion,CategorieDAO $categorieDAO, ContactDAO $contactDAO) {
+        $this->connexion = $connexion;
+        $this->categorieDAO= $categorieDAO;
+        $this->contactDAO = $contactDAO;
+    }
+
+    /**
+ * Vérifier si le numéro de licence existe déjà
+ *
+ * @param int $numeroLicence
+ * @return bool
+ */
+
+
+ public function isNumeroLicenceExists($numeroLicence) {
+    try {
+        $stmt = $this->connexion->pdo->prepare("SELECT COUNT(*) FROM licencie WHERE numeroLicence = ?");
+        $stmt->execute([$numeroLicence]);
+        $count = $stmt->fetchColumn();
+
+        return $count > 0; // Si le compte est supérieur à zéro, le numéro de licence existe déjà
+    } catch (PDOException $e) {
+        // 
+        return false;
+    }
+}
+
+
+public function getLicencieByNumeroLicence($numeroLicence)
+{
+    try {
+        $stmt = $this->connexion->pdo->prepare("SELECT * FROM licencie WHERE numeroLicence = ?");
+        $stmt->execute([$numeroLicence]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            
+            $licencie = new LicencieModel();
+            $licencie->setNumeroLicence($row['numeroLicence']);
+            $licencie->setNom($row['nom']);
+            $licencie->setPrenom($row['prenom']);
+
+            // récupérer le contact et la catégorie associés
+            $licencie->setContact($this->contactDAO->getContactById($row['idcontact']));
+            $licencie->setCategorie($this->categorieDAO->getCategorieByCode($row['idcategorie']));
+
+            return $licencie;
+        } else {
+            return null;
+        }
+    } catch (PDOException $e) {
+       
+        return null;
+    }
+}
+
+
+    // Ajouter un licencie
+    public function create($licencie) {
+       
+        
+        if($licencie instanceof LicencieModel){
+  
+        try {
+
+            // Vérifier si le numéro de licence existe déjà
+            if ($this->isNumeroLicenceExists($licencie->getNumeroLicence())) {
+                // Numéro de licence déjà existant, vous pouvez gérer cela comme vous le souhaitez
+                echo "Erreur: Numéro de licence déjà existant.";
+                return false;
+            }
+    // Vérifier si le code de la catégorie existe déjà
+    $existingCategorie = $this->categorieDAO->getCategorie($licencie->getCategorie()->getNom());
+    if ($existingCategorie) {
+        // La catégorie avec le nom spécifié existe déjà, on l'utilise pour créer le licencie
+        $licencie->setCategorie($existingCategorie);
+    } else {
+        // La catégorie n'existe pas, on la créé d'abord
+        $this->categorieDAO->create($licencie->getCategorie());
+        $licencie->setCategorie($this->categorieDAO->getCategorie($licencie->getCategorie()->getNom()));
+    }
+
+         // Vérifier si l'ID du contact existe déjà
+         $existingContact = $this->contactDAO->getContact(
+            $licencie->getContact()->getNom(),
+            $licencie->getContact()->getPrenom(),
+            $licencie->getContact()->getEmail(),
+            $licencie->getContact()->getTelephone()
+        );
+
+        if ($existingContact) {
+            $licencie->setContact($existingContact);
+        } else {
+            // Sinon, créez le contact
+            $this->contactDAO->create($licencie->getContact());
+            // Récupérez le contact fraîchement créé
+            $licencie->setContact($this->contactDAO->getContact(
+                $licencie->getContact()->getNom(),
+                $licencie->getContact()->getPrenom(),
+                $licencie->getContact()->getEmail(),
+                $licencie->getContact()->getTelephone()
+            ));
+        }
+            $stmt = $this->connexion->pdo->prepare("INSERT INTO licencie(numeroLicence,nom,prenom,idcontact,idcategorie,email,pwd,isAdmin) VALUES (?, ?,?,?,?,?,?,?)");
+            $stmt->execute([$licencie->getNumeroLicence(), $licencie->getNom(),$licencie->getPrenom(),$licencie->getContact()->getId(),$licencie->getCategorie()->getCode(),null,null,null]);
+            
+            return true;
+        } catch (PDOException $e) {
+            return false;
+        }
+    } else {
+        echo "ecehec enregistrement";
+    }
+    }
+
+  // Modifier un licencie
+    public function modify ($licencie){
+        if($licencie instanceof LicencieModel){
+        try {
+            $stmt = $this->connexion->pdo->prepare("UPDATE licencie SET nom = ?,prenom = ?,idcontact = ?,idcategorie = ?,email=?,pwd=?,isAdmin=? WHERE numeroLicence = ?");
+            $stmt->execute([$licencie->getNom(), $licencie->getPrenom(),$licencie->getContact()->getId(),$licencie->getCategorie()->getCode(),null,null,null,$licencie->getNumeroLicence()]);
+            return true;
+        } catch (PDOException $e) {
+            
+            return false;
+        }
+    }
+
+    }
+
+    // Supprimer un licencie
+    public function delete($numeroLicence) {
+        try {
+            $stmt = $this->connexion->pdo->prepare("DELETE FROM licencie WHERE numeroLicence = ?");
+            $stmt->execute([$numeroLicence()]);
+            return true;
+        } catch (PDOException $e) {
+            
+            return false;
+        }
+    }
+
+
+   // Supprimer le contact du licencié en mettant le champ à null
+    public function deleteContactForLicencie($numeroLicence)
+{
+    try {
+        
+        $stmt = $this->connexion->pdo->prepare("UPDATE licencie SET idcontact = NULL WHERE numeroLicence = ?");
+        $stmt->execute([$numeroLicence]);
+
+        return true;
+    } catch (PDOException $e) {
+        
+        return false;
+    }
+}
+
+  // La liste des licencies
+    public function list() {
+        try {
+            $stmt = $this->connexion->pdo->prepare("SELECT * FROM licencie");
+            $stmt->execute();
+            $categories = $stmt->fetchAll(PDO::FETCH_CLASS, 'LicencieModel');
+    
+            return $categories;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+    
+
+  
+}
+?>
