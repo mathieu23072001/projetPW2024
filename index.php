@@ -1,3 +1,4 @@
 <?php
-header("Location:controllers/HomeController.php");
+header('Location: ./views/login.php');
+exit;
 ?>

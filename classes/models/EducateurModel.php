@@ -1,5 +1,7 @@
 <?php
 
+require_once("../classes/models/LicencieModel.php");
+
 class EducateurModel extends LicencieModel {
 
     private string $email;

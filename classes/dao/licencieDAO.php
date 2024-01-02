@@ -51,8 +51,8 @@ public function getLicencieByNumeroLicence($numeroLicence)
             $licencie->setPrenom($row['prenom']);
 
             // récupérer le contact et la catégorie associés
-            $licencie->setContact($this->contactDAO->getContactById($row['idcontact']));
-            $licencie->setCategorie($this->categorieDAO->getCategorieByCode($row['idcategorie']));
+            $licencie->setContact($this->contactDAO->getContact($row['idcontact']));
+            $licencie->setCategorie($this->categorieDAO->getCategorie($row['idcategorie']));
 
             return $licencie;
         } else {
@@ -75,28 +75,28 @@ public function getLicencieByNumeroLicence($numeroLicence)
 
             // Vérifier si le numéro de licence existe déjà
             if ($this->isNumeroLicenceExists($licencie->getNumeroLicence())) {
-                // Numéro de licence déjà existant, vous pouvez gérer cela comme vous le souhaitez
+            
                 echo "Erreur: Numéro de licence déjà existant.";
                 return false;
             }
     // Vérifier si le code de la catégorie existe déjà
-    $existingCategorie = $this->categorieDAO->getCategorie($licencie->getCategorie()->getNom());
+    $existingCategorie = $this->categorieDAO->getCategorie($licencie->getCategorie()->getCode());
+    var_dump($existingCategorie);
     if ($existingCategorie) {
-        // La catégorie avec le nom spécifié existe déjà, on l'utilise pour créer le licencie
+        // La catégorie avec le code spécifié existe déjà, on l'utilise pour créer le licencie
         $licencie->setCategorie($existingCategorie);
     } else {
         // La catégorie n'existe pas, on la créé d'abord
         $this->categorieDAO->create($licencie->getCategorie());
-        $licencie->setCategorie($this->categorieDAO->getCategorie($licencie->getCategorie()->getNom()));
+        $licencie->setCategorie($this->categorieDAO->getCategorie($licencie->getCategorie()->getCode()));
     }
 
          // Vérifier si l'ID du contact existe déjà
          $existingContact = $this->contactDAO->getContact(
-            $licencie->getContact()->getNom(),
-            $licencie->getContact()->getPrenom(),
-            $licencie->getContact()->getEmail(),
-            $licencie->getContact()->getTelephone()
+            $licencie->getContact()->getId()
+           
         );
+        var_dump($existingContact);
 
         if ($existingContact) {
             $licencie->setContact($existingContact);
@@ -142,7 +142,7 @@ public function getLicencieByNumeroLicence($numeroLicence)
     public function delete($numeroLicence) {
         try {
             $stmt = $this->connexion->pdo->prepare("DELETE FROM licencie WHERE numeroLicence = ?");
-            $stmt->execute([$numeroLicence()]);
+            $stmt->execute([$numeroLicence]);
             return true;
         } catch (PDOException $e) {
             
@@ -156,7 +156,7 @@ public function getLicencieByNumeroLicence($numeroLicence)
 {
     try {
         
-        $stmt = $this->connexion->pdo->prepare("UPDATE licencie SET idcontact = NULL WHERE numeroLicence = ?");
+        $stmt = $this->connexion->pdo->prepare("UPDATE licencie SET idcontact = null WHERE numeroLicence = ?");
         $stmt->execute([$numeroLicence]);
 
         return true;
@@ -171,9 +171,18 @@ public function getLicencieByNumeroLicence($numeroLicence)
         try {
             $stmt = $this->connexion->pdo->prepare("SELECT * FROM licencie");
             $stmt->execute();
-            $categories = $stmt->fetchAll(PDO::FETCH_CLASS, 'LicencieModel');
+            $licencies = $stmt->fetchAll(PDO::FETCH_CLASS, 'LicencieModel');
+
+            foreach ($licencies as $licencie) {
+                $stmt0 = $this->connexion->pdo->prepare("SELECT idcategorie, idcontact FROM licencie WHERE numeroLicence = ?");
+                $stmt0->execute([$licencie->getNumeroLicence()]);
+                $result = $stmt0->fetchAll(PDO::FETCH_ASSOC)[0];
+                $licencie->setCategorie($this->categorieDAO->getCategorie($result['idcategorie']));
+                $licencie->setContact($this->contactDAO->getContact($result['idcontact']));
+
+            }
     
-            return $categories;
+            return $licencies;
         } catch (PDOException $e) {
             return false;
         }

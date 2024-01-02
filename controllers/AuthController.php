@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 class AuthController {
+
     
     // Fonction pour effectuer la connexion
     public static function login($email, $password) {
@@ -86,4 +87,7 @@ if (AuthController::isUserLoggedIn()) {
     // Si une requête POST est reçue et que le bouton de déconnexion est soumis, effectue la déconnexion
     AuthController::logout();
 }
+
+
+
 ?>

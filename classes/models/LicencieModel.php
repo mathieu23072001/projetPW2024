@@ -5,7 +5,7 @@ class LicencieModel {
     protected int  $numeroLicence;
     protected string $nom;
     protected string $prenom;
-    protected ContactModel $contact;
+    protected ?ContactModel $contact;
     protected CategorieModel $categorie;
 
 
@@ -70,9 +70,9 @@ class LicencieModel {
     /**
      * Get the value of contact
      *
-     * @return ContactModel
+     * @return ContactModel | null
      */
-    public function getContact(): ContactModel
+    public function getContact(): ?ContactModel
     {
         return $this->contact;
     }
@@ -84,7 +84,7 @@ class LicencieModel {
      *
      * @return self
      */
-    public function setContact(ContactModel $contact): self
+    public function setContact(?ContactModel $contact): self
     {
         $this->contact = $contact;
 

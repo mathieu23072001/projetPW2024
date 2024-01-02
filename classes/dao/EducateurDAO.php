@@ -23,7 +23,7 @@ class EducateurDAO implements DaoInterface {
     
             return $count > 0; // Si le compte est supérieur à zéro, le numéro de licence existe déjà
         } catch (PDOException $e) {
-            // Gérer les erreurs de vérification ici
+            
             return false;
         }
     }
@@ -43,19 +43,20 @@ class EducateurDAO implements DaoInterface {
                 $educateur->setNom($row['nom']);
                 $educateur->setPrenom($row['prenom']);
                 $educateur->setEmail($row['email']);
-                $educateur->setPwd($row['pwd']); // Assurez-vous de décrypter le mot de passe si nécessaire
+                $educateur->setPwd($row['pwd']); 
                 $educateur->setIsAdmin($row['isAdmin']);
-                $educateur->setContact($row['idContact']);
-                $educateur->setCategorie($row['idCategorie']);
+               // récupérer le contact et la catégorie associés
+            $educateur->setContact($this->contactDAO->getContact($row['idcontact']));
+            $educateur->setCategorie($this->categorieDAO->getCategorie($row['idcategorie']));
 
-                // Vous devrez également définir les objets ContactModel et CategorieModel associés
+                
 
                 return $educateur;
             } else {
                 return null;
             }
         } catch (PDOException $e) {
-            // Gérer les erreurs de récupération ici
+            
             return null;
         }
     }
@@ -70,7 +71,7 @@ class EducateurDAO implements DaoInterface {
 
             // Vérifier si le numéro de licence existe déjà
             if ($this->isNumeroLicenceExists($educateur->getNumeroLicence())) {
-                // Numéro de licence déjà existant, vous pouvez gérer cela comme vous le souhaitez
+              
                 echo "Erreur: Numéro de licence déjà existant.";
                 return false;
             }
@@ -78,22 +79,20 @@ class EducateurDAO implements DaoInterface {
             
 
     // Vérifier si le code de la catégorie existe déjà
-    $existingCategorie = $this->categorieDAO->getCategorie($educateur->getCategorie()->getNom());
+    $existingCategorie = $this->categorieDAO->getCategorie($educateur->getCategorie()->getCode());
     if ($existingCategorie) {
-        // La catégorie avec le nom spécifié existe déjà, utilisez-la pour créer le licencié
+        
         $educateur->setCategorie($existingCategorie);
     } else {
-        // La catégorie n'existe pas, créez-la d'abord
+        
         $this->categorieDAO->create($educateur->getCategorie());
-        $educateur->setCategorie($this->categorieDAO->getCategorie($educateur->getCategorie()->getNom()));
+        $educateur->setCategorie($this->categorieDAO->getCategorie($educateur->getCategorie()->getCode()));
     }
 
          // Vérifier si l'ID du contact existe déjà
          $existingContact = $this->contactDAO->getContact(
-            $educateur->getContact()->getNom(),
-            $educateur->getContact()->getPrenom(),
-            $educateur->getContact()->getEmail(),
-            $educateur->getContact()->getTelephone()
+            $educateur->getContact()->getId()
+        
         );
 
         if ($existingContact) {
@@ -126,7 +125,7 @@ $stmt->execute([
 
             return true;
         } catch (PDOException $e) {
-            // GÃ©rer les erreurs d'insertion ici
+           
             return false;
         }
     } else {
@@ -136,8 +135,8 @@ $stmt->execute([
 
     public function modify($educateur) {
 
-        var_dump( $educateur->getContact()->getId());
-        var_dump($educateur->getCategorie()->getCode());
+       // var_dump( $educateur->getContact()->getId());
+       // var_dump($educateur->getCategorie()->getCode());
         if ($educateur instanceof EducateurModel) {
             try {
                 // Vérifiez si un nouveau mot de passe a été fourni
@@ -187,9 +186,18 @@ $stmt->execute([
             // Récupérer toutes les lignes résultantes en tant qu'objets EducateurModel
             $educateurs = $stmt->fetchAll(PDO::FETCH_CLASS, 'EducateurModel');
 
+            foreach ($educateurs as $educateur) {
+                $stmt0 = $this->connexion->pdo->prepare("SELECT idcategorie, idcontact FROM licencie WHERE numeroLicence = ?");
+                $stmt0->execute([$educateur->getNumeroLicence()]);
+                $result = $stmt0->fetchAll(PDO::FETCH_ASSOC)[0];
+                $educateur->setCategorie($this->categorieDAO->getCategorie($result['idcategorie']));
+                $educateur->setContact($this->contactDAO->getContact($result['idcontact']));
+
+            }
+
             return $educateurs;
         } catch (PDOException $e) {
-            // Gérer les erreurs de récupération de données ici
+            
             return false;
         }
     }
