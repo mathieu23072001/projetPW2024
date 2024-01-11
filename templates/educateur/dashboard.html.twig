@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ceci est un test {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+
+{{ parent() }}
+{% endblock %}
+
+    {% block body %}
+<!-- Page Content -->
+<div class="content container-fluid">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="page-title"> Bienvenue Admin!</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item active">Tableau de bord</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+    <div class="row">
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="card dash-widget">
+                <div class="card-body">
+                    <span class="dash-widget-icon"><i class="fa fa-cubes"></i></span>
+                    <div class="dash-widget-info">
+                        <h3>{{nbreCat}}</h3>
+                        <span>Categories</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="card dash-widget">
+                <div class="card-body">
+                    <span class="dash-widget-icon"><i class="fa fa-user"></i></span>
+                    <div class="dash-widget-info">
+                        <h3>{{nbreCont}}</h3>
+                        <span>Contacts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="card dash-widget">
+                <div class="card-body">
+                    <span class="dash-widget-icon"><i class="fa fa-user"></i></span>
+                    <div class="dash-widget-info">
+                        <h3>{{nbreLicen}}</h3>
+                        <span>Licenciés</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+            <div class="card dash-widget">
+                <div class="card-body">
+                    <span class="dash-widget-icon"><i class="fa fa-user"></i></span>
+                    <div class="dash-widget-info">
+                        <h3>{{nbreEdu}}</h3>
+                        <span>Educateurs</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+<!-- /Page Content -->
+
+{% endblock %}

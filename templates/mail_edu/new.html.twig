@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New MailEdu{% endblock %}
+
+{% block body %}
+    <h1>Create new MailEdu</h1>
+
+    {{ include('mail_edu/_form.html.twig') }}
+
+    <a href="{{ path('app_mail_edu_index') }}">back to list</a>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MailEdu index{% endblock %}
+
+{% block body %}
+    <h1>MailEdu index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>DateEnvoi</th>
+                <th>Objet</th>
+                <th>Message</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for mail_edu in mail_edus %}
+            <tr>
+                <td>{{ mail_edu.id }}</td>
+                <td>{{ mail_edu.dateEnvoi ? mail_edu.dateEnvoi|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ mail_edu.objet }}</td>
+                <td>{{ mail_edu.message }}</td>
+                <td>
+                    <a href="{{ path('app_mail_edu_show', {'id': mail_edu.id}) }}">show</a>
+                    <a href="{{ path('app_mail_edu_edit', {'id': mail_edu.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_mail_edu_new') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ceci est un test {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofT8+cu5FvXAZ+O7aI47tq+76RMEb7E2x" crossorigin="anonymous">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+<!-- Page Content -->
+
+<div class="content container-fluid">
+	
+{% for message in app.flashes('success') %}
+<div class="alert alert-success">
+    {{ message }}
+</div>
+{% endfor %}
+
+{% for message in app.flashes('modify') %}
+<div class="alert alert-info">
+    {{ message }}
+</div>
+{% endfor %}
+
+{% for message in app.flashes('delete') %}
+<div class="alert alert-danger">
+    {{ message }}
+</div>
+{% endfor %}
+    
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="page-title">Liste categories</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Categorie</a></li>
+                    <li class="breadcrumb-item active">Liste</li>
+                </ul>
+                <a href="{{ path('app_categorie_new') }}" class="btn btn-primary float-right">Ajouter une catégorie</a>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-striped table-nowrap custom-table mb-0 datatable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Code</th>
+                            <th>Libelle</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in categories %}
+                        <tr>
+                            <td>{{ c.id }}</td>
+                            <td>
+                                <h2 class="table-avatar">
+                                    {{ c.code }}
+                                </h2>
+                            </td>
+                            <td>{{ c.nom }}</td>
+                            <td>
+                                <a href="{{ path('app_categorie_edit', {'id': c.id}) }}" class="btn btn-info"><i class="las la-edit"></i></a>
+                                <a href="{{ path('app_categorie_delete', {'id': c.id}) }}" class="btn btn-danger"><i class="las la-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->
+
+</div>
+
+<!-- /Page Content -->
+
+{% endblock %}

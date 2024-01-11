@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New MailContact{% endblock %}
+
+{% block body %}
+    <h1>Create new MailContact</h1>
+
+    {{ include('mail_contact/_form.html.twig') }}
+
+    <a href="{{ path('app_mail_contact_index') }}">back to list</a>
+{% endblock %}
