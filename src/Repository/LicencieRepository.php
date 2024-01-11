@@ -56,4 +56,45 @@ class LicencieRepository extends ServiceEntityRepository
          ->getQuery()
          ->getSingleScalarResult();
  }
+
+ /**
+     * Récupère les contacts d'une catégorie spécifique.
+     *
+     * @param int $idCategorie L'ID de la catégorie
+     * @return array Les contacts associés à la catégorie
+     */
+    public function findContactsByCategorie(int $idCategorie): array
+    {
+        return $this->createQueryBuilder('l')
+        ->select('c, l') 
+        ->join('l.contact', 'c')
+        ->join('l.categorie', 'cat')
+        ->andWhere('cat.id = :idCategorie')
+        ->setParameter('idCategorie', $idCategorie)
+        ->getQuery()
+        ->getResult();
+
+    }
+
+
+    public function getContactsByCategory($categoryId)
+{
+    $entityManager = $this->getEntityManager();
+
+    $query = $entityManager->createQuery(
+        'SELECT contact
+        FROM App\Entity\Categorie categorie
+        JOIN categorie.licencies licencie
+        JOIN licencie.contact contact
+        WHERE categorie.id = :categoryId'
+    )->setParameter('categoryId', $categoryId);
+
+    return $query->getResult();
+}
+
+
+
+
+
+    
 }

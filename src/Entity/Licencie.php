@@ -9,8 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LicencieRepository::class)]
 #[ORM\InheritanceType("JOINED")]
-#[ORM\DiscriminatorColumn(name :"ltype", type:"string")]
-#[ORM\DiscriminatorMap(["Edu" => Educateur::class])]
+#[ORM\DiscriminatorColumn(name :"dtype", type:"string")]
+#[ORM\DiscriminatorMap(["Edu" => Educateur::class,"Licencie" => Licencie::class,])]
 
 class Licencie
 {

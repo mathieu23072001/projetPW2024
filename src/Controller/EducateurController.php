@@ -78,6 +78,10 @@ class EducateurController extends AbstractController
                 $educateur,
                 $pwd
             );
+
+            //$isAdmin = $request->request->get('form')['isAdmin'];
+            $isAdmin = $request->request->get('isAdmin');
+            $educateur->setIsAdmin($isAdmin==1 ? 1 : 0);
             $educateur->setPwd($hashedPassword);
             $entityManager->persist($educateur);
             $entityManager->flush();

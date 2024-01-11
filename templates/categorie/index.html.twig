@@ -60,6 +60,7 @@
                             <th>Code</th>
                             <th>Libelle</th>
                             <th>Action</th>
+                            <th> Infos contact/Licencie <th>
                         </tr>
                     </thead>
                     <tbody>
@@ -75,6 +76,11 @@
                             <td>
                                 <a href="{{ path('app_categorie_edit', {'id': c.id}) }}" class="btn btn-info"><i class="las la-edit"></i></a>
                                 <a href="{{ path('app_categorie_delete', {'id': c.id}) }}" class="btn btn-danger"><i class="las la-trash-alt"></i></a>
+                            </td>
+
+                            <td>
+                                <a href ="{{path('app_cat_contact_show',{'id':c.id})}}"> Afficher contact</a> <br/>
+                                <a href ="{{path('app_cat_licencie_show',{'id':c.id})}}">Afficher licencie </a>
                             </td>
                         </tr>
                         {% endfor %}
