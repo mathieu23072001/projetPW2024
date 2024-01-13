@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Contact;
 use App\Entity\MailContact;
 use App\Form\MailContactType;
 use Symfony\Component\Mime\Email;
@@ -93,14 +94,20 @@ class MailContactController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_mail_contact_delete', methods: ['POST'])]
-    public function delete(Request $request, MailContact $mailContact, EntityManagerInterface $entityManager): Response
+    #[Route('/delete/{id}', name: 'app_mail_contact_delete', methods: ['GET','POST'])]
+    public function delete( $id, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$mailContact->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($mailContact);
-            $entityManager->flush();
-        }
 
+        $mail_contact = $entityManager->getRepository(MailContact::class);
+        $mail_contact = $mail_contact->find($id);
+        
+    
+            $entityManager->remove($mail_contact);
+            $entityManager->flush();
+        
+
+        
+        $this->addFlash('delete', 'suppression effectué');
         return $this->redirectToRoute('app_mail_contact_index', [], Response::HTTP_SEE_OTHER);
     }
 }

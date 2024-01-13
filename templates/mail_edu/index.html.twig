@@ -22,6 +22,18 @@
     {{ message }}
 </div>
 {% endfor %}
+
+{% for message in app.flashes('modify') %}
+<div class="alert alert-info">
+    {{ message }}
+</div>
+{% endfor %}
+
+{% for message in app.flashes('delete') %}
+<div class="alert alert-danger">
+    {{ message }}
+</div>
+{% endfor %}
 				
 					<!-- Page Header -->
 					<div class="page-header">
@@ -131,7 +143,7 @@
 												<tbody>
                                                     {% for mail_edu in mail_edus %}
                                                     {% for educateur in mail_edu.educateurs %}
-													<tr class="unread clickable-row" data-href="#">
+													<tr class="unread clickable-row" data-href="{{path('app_mail_edu_show', {'id': mail_edu.id})}}">
 														<td>
 															<input type="checkbox" class="checkmail">
 														</td>

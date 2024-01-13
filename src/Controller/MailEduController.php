@@ -96,14 +96,20 @@ public function new(Request $request, EntityManagerInterface $entityManager, Mai
         ]);
     }
 
-    #[Route('/{id}', name: 'app_mail_edu_delete', methods: ['POST'])]
-    public function delete(Request $request, MailEdu $mailEdu, EntityManagerInterface $entityManager): Response
+    #[Route('/delete/{id}', name: 'app_mail_edu_delete', methods: ['GET', 'POST'])]
+    public function delete( $id, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$mailEdu->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($mailEdu);
-            $entityManager->flush();
-        }
 
+        $mail_edu = $entityManager->getRepository(MailEdu::class);
+        $mail_edu = $mail_edu->find($id);
+        
+    
+            $entityManager->remove($mail_edu);
+            $entityManager->flush();
+        
+
+        
+        $this->addFlash('delete', 'suppression effectué');
         return $this->redirectToRoute('app_mail_edu_index', [], Response::HTTP_SEE_OTHER);
     }
 }
