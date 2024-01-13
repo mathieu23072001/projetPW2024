@@ -20,6 +20,7 @@ class MailEduController extends AbstractController
     #[Route('/', name: 'app_mail_edu_index', methods: ['GET'])]
     public function index(MailEduRepository $mailEduRepository): Response
     {
+       // dd($mailEduRepository->findAll());
         return $this->render('mail_edu/index.html.twig', [
             'mail_edus' => $mailEduRepository->findAll(),
         ]);
@@ -32,16 +33,17 @@ public function new(Request $request, EntityManagerInterface $entityManager, Mai
     $form = $this->createForm(MailEduType::class, $mailEdu);
     $form->handleRequest($request);
 
+    //dd($this->getUser());
+
     if ($form->isSubmitted() && $form->isValid()) {
         $educateurs = $form->get('educateur')->getData();
 
         foreach ($educateurs as $educateur) {
             $email = (new Email())
-                ->from('mathieu@example.com') 
-                //->to($educateur->getEmail())
-                ->to('mat@example.com ')
-                ->subject('ooror')
-                ->text('ofofofofo')
+                ->from('admin@example.com') 
+                ->to($educateur->getEmail())
+                ->subject($form->get('objet')->getData())
+                ->text($form->get('message')->getData())
                 ->html('<p>See Twig integration for better HTML integration!</p>');
 
             $mailer->send($email);
