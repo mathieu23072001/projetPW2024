@@ -27,15 +27,18 @@ class Contact
     #[ORM\Column(length: 255)]
     private ?string $telephone = null;
 
-    #[ORM\ManyToOne(inversedBy: 'contacts')]
-    private ?MailContact $mailContact = null;
+   
 
     #[ORM\OneToMany(mappedBy: 'contact', targetEntity: Licencie::class)]
     private Collection $licencies;
 
+    #[ORM\ManyToMany(targetEntity: MailContact::class, mappedBy: 'contacts')]
+    private Collection $mailContacts;
+
     public function __construct()
     {
         $this->licencies = new ArrayCollection();
+        $this->mailContacts = new ArrayCollection();
     }
 
     
@@ -93,17 +96,6 @@ class Contact
         return $this;
     }
 
-    public function getMailContact(): ?MailContact
-    {
-        return $this->mailContact;
-    }
-
-    public function setMailContact(?MailContact $mailContact): static
-    {
-        $this->mailContact = $mailContact;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Licencie>
@@ -130,6 +122,33 @@ class Contact
             if ($licency->getContact() === $this) {
                 $licency->setContact(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MailContact>
+     */
+    public function getMailContacts(): Collection
+    {
+        return $this->mailContacts;
+    }
+
+    public function addMailContact(MailContact $mailContact): static
+    {
+        if (!$this->mailContacts->contains($mailContact)) {
+            $this->mailContacts->add($mailContact);
+            $mailContact->addContact($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMailContact(MailContact $mailContact): static
+    {
+        if ($this->mailContacts->removeElement($mailContact)) {
+            $mailContact->removeContact($this);
         }
 
         return $this;

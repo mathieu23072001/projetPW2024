@@ -8,12 +8,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MailEduRepository::class)]
-
-
 class MailEdu extends Mail
 {
-
-    #[ORM\OneToMany(mappedBy: 'mailEdu', targetEntity: Educateur::class)]
+    #[ORM\ManyToMany(targetEntity: Educateur::class, inversedBy: 'mailEdus')]
     private Collection $educateurs;
 
     public function __construct()
@@ -21,10 +18,8 @@ class MailEdu extends Mail
         $this->educateurs = new ArrayCollection();
     }
 
-
-
     /**
-     * @return Collection<int, educateur>
+     * @return Collection<int, Educateur>
      */
     public function getEducateurs(): Collection
     {
@@ -35,7 +30,6 @@ class MailEdu extends Mail
     {
         if (!$this->educateurs->contains($educateur)) {
             $this->educateurs->add($educateur);
-            $educateur->setMailEdu($this);
         }
 
         return $this;
@@ -43,17 +37,8 @@ class MailEdu extends Mail
 
     public function removeEducateur(Educateur $educateur): static
     {
-        if ($this->educateurs->removeElement($educateur)) {
-            // set the owning side to null (unless already changed)
-            if ($educateur->getMailEdu() === $this) {
-                $educateur->setMailEdu(null);
-            }
-        }
+        $this->educateurs->removeElement($educateur);
 
         return $this;
     }
-
- 
-
-
 }

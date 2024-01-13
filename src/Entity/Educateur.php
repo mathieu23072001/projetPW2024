@@ -21,9 +21,15 @@ class Educateur extends Licencie implements UserInterface, PasswordAuthenticated
     #[ORM\Column]
     private ?bool $isAdmin = null;
 
-    #[ORM\ManyToOne(inversedBy: 'educateurs')]
-    private ?MailEdu $mailEdu = null;
+    #[ORM\ManyToMany(targetEntity: MailEdu::class, mappedBy: 'educateurs')]
+    private Collection $mailEdus;
 
+    public function __construct()
+    {
+        $this->mailEdus = new ArrayCollection();
+    }
+
+    
     public function getEmail(): ?string
     {
         return $this->email;
@@ -60,17 +66,7 @@ class Educateur extends Licencie implements UserInterface, PasswordAuthenticated
         return $this;
     }
 
-    public function getMailEdu(): ?MailEdu
-    {
-        return $this->mailEdu;
-    }
 
-    public function setMailEdu(?MailEdu $mailEdu): static
-    {
-        $this->mailEdu = $mailEdu;
-
-        return $this;
-    }
 
      /**
      * A visual identifier that represents this user.
@@ -107,6 +103,33 @@ class Educateur extends Licencie implements UserInterface, PasswordAuthenticated
     public function eraseCredentials()
     {
         // Suppression des données sensibles éventuellement stockées
+    }
+
+    /**
+     * @return Collection<int, MailEdu>
+     */
+    public function getMailEdus(): Collection
+    {
+        return $this->mailEdus;
+    }
+
+    public function addMailEdu(MailEdu $mailEdu): static
+    {
+        if (!$this->mailEdus->contains($mailEdu)) {
+            $this->mailEdus->add($mailEdu);
+            $mailEdu->addEducateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMailEdu(MailEdu $mailEdu): static
+    {
+        if ($this->mailEdus->removeElement($mailEdu)) {
+            $mailEdu->removeEducateur($this);
+        }
+
+        return $this;
     }
 
 
