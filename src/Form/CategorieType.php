@@ -15,8 +15,9 @@ class CategorieType extends AbstractType
         $builder
         ->add('code', TextType::class, array(
             'required'=>true,
+             'disabled'=> true,
            
-            'attr'=>array('class'=>'form-control','placeholder'=>' Code categorie')
+            'attr'=>array('class'=>'form-control','placeholder'=>' Le code sera généré automatiquement')
             ))
             ->add('nom', TextType::class, array(
                 'required'=>true,

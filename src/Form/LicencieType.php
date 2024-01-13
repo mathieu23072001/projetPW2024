@@ -18,8 +18,9 @@ class LicencieType extends AbstractType
         $builder
         ->add('numero', TextType::class, array(
             'required'=>true,
+            'disabled'=> true,
            
-            'attr'=>array('class'=>'form-control','placeholder'=>' Identifiant du licencié')
+            'attr'=>array('class'=>'form-control','placeholder'=>' Le numéro sera généré automatiquement')
             ))
             ->add('nom', TextType::class, array(
                 'required'=>true,

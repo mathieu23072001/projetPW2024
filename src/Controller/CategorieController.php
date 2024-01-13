@@ -79,6 +79,10 @@ public function contactShow(int $id, LicencieRepository $licencieRepository,Cate
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            
+           $generatedCode = 'CAT' . uniqid();
+           $categorie->setCode($generatedCode);
             $entityManager->persist($categorie);
             $entityManager->flush();
 

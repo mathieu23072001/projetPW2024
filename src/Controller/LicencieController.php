@@ -30,6 +30,9 @@ class LicencieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $generatedCode = 'LIC' . uniqid();
+           $licencie->setNumero($generatedCode);
             $entityManager->persist($licencie);
             $entityManager->flush();
 

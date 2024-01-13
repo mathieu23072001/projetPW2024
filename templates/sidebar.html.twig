@@ -6,18 +6,18 @@
 							<li class="menu-title"> 
 								<span>Menu</span>
 							</li>
-							<li class="submenu">
+							<li class="submenu"  {% if app.request.get('_route') == 'app_educateur_dashboard' %} class="active"{% endif %}>
 								<a href="{{path('app_educateur_dashboard')}}"><i class="la la-dashboard"></i> <span> Tableau de bord</span> <span class=""></span></a>
 								
 							</li>
 							<li class="submenu">
-								<a href="#"><i class="la la-envelope"></i> <span> Mails</span> <span class="menu-arrow"></span></a>
+								<a href="#"><i class="la la-envelope"></i> <span > Mails</span> <span class="menu-arrow"></span></a>
 								<ul style="display: none;">
 									<li {% if app.request.get('_route') == 'app_mail_edu_index' %} class="active"{% endif %}>
 										<a href="{{path('app_mail_edu_index')}}">Educateurs</a>
 									</li>
 							
-									<li><a href="#">Licenciés</a></li>
+		
 									<li><a href="{{path('app_mail_contact_index')}}">Contacts</a></li>
 						
 								</ul>
@@ -30,19 +30,19 @@
 								<a href="{{path('app_categorie_new')}}"><i class="la la-folder"></i> <span>Ajouter categorie</span></a>
 							</li>
 							
-							<li> 
+							<li {% if app.request.get('_route') == 'app_categorie_index' %} class="active"{% endif %}> 
 								<a href="{{path('app_categorie_index')}}"><i class="la la-list"></i> <span>Liste categories</span></a>
 							</li>
 							
-							<li class="menu-title"> 
+							<li class="menu-title" > 
 								<span>Gestion des contacts</span>
 							</li>
 							
 							
-							<li> 
+							<li {% if app.request.get('_route') == 'app_contact_new' %} class="active"{% endif %}> 
 								<a href="{{path('app_contact_new')}}"><i class="la la-user"></i> <span>Ajouter contacts</span></a>
 							</li>
-							<li class="submenu">
+							<li  {% if app.request.get('_route') == 'app_contact_index' %} class="active"{% endif %}>
 								<a href="{{path('app_contact_index')}}"><i class="la la-list"></i> <span> Liste contacts </span> <span class=""></span></a>
 								
 							</li>
@@ -52,17 +52,17 @@
 							
 							
 						
-							<li><a href="{{path('app_licencie_new')}}"><i class="la la-user"></i> <span>Ajouter licenciés</span></a></li>
-							<li><a href="{{path('app_licencie_index')}}"><i class="la la-list"></i> <span>Liste licenciés</span></a></li>
+							<li {% if app.request.get('_route') == 'app_licencie_new' %} class="active"{% endif %}><a href="{{path('app_licencie_new')}}"><i class="la la-user"></i> <span>Ajouter licenciés</span></a></li>
+							<li {% if app.request.get('_route') == 'app_licencie_index' %} class="active"{% endif %}><a href="{{path('app_licencie_index')}}"><i class="la la-list"></i> <span>Liste licenciés</span></a></li>
 							
 							<li class="menu-title"> 
 								<span>Gestion educateurs</span>
 							</li>
-							<li> 
+							<li {% if app.request.get('_route') == 'app_educateur_new' %} class="active"{% endif %}> 
 								<a href="{{path('app_educateur_new')}}"><i class="la la-user"></i> <span>Ajouter educateurs</span></a>
 							</li>
 							
-							<li> 
+							<li {% if app.request.get('_route') == 'app_educateur_index' %} class="active"{% endif %}> 
 								<a href="{{path('app_educateur_index')}}"><i class="la la-list"></i> <span>Liste educateurs</span></a>
 							</li>
 							

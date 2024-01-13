@@ -74,6 +74,9 @@ class EducateurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $generatedCode = 'EDU' . uniqid();
+           $educateur->setNumero($generatedCode);
             $pwd= $form->get('pwd')->getData();
 
             $hashedPassword = $passwordHasher->hashPassword(
