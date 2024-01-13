@@ -108,4 +108,7 @@ class Educateur extends Licencie implements UserInterface, PasswordAuthenticated
     {
         // Suppression des données sensibles éventuellement stockées
     }
+
+
+   
 }

@@ -34,7 +34,13 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
 		
 
-       
+		<!-- Select2 CSS -->
+		<link rel="stylesheet" href="{{asset('assets/css/select2.min.css')}}">
+		
+		<!-- Summernote CSS -->
+		<link rel="stylesheet" href="{{asset('assets/plugins/summernote/dist/summernote-bs4.css')}}">
+		
+		
 
 
         {% endblock %}
@@ -58,6 +64,14 @@
 		
 		<!-- Custom JS -->
 		<script src="{{asset('assets/js/app.js')}}"></script>
+
+
+		
+		<!-- Summernote JS -->
+		<script src="{{asset('assets/plugins/summernote/dist/summernote-bs4.min.js')}}"></script>
+		
+		<!-- Select2 JS -->
+		<script src="{{asset('assets/js/select2.min.js')}}"></script>     
 
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 {% block importmap %}{{ importmap('app') }}{% endblock %}

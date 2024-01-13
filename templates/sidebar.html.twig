@@ -13,9 +13,11 @@
 							<li class="submenu">
 								<a href="#"><i class="la la-envelope"></i> <span> Mails</span> <span class="menu-arrow"></span></a>
 								<ul style="display: none;">
-									<li><a href="chat.html">Educateurs</a></li>
+									<li {% if app.request.get('_route') == 'app_mail_edu_index' %} class="active"{% endif %}>
+										<a href="{{path('app_mail_edu_index')}}">Educateurs</a>
+									</li>
 							
-									<li><a href="events.html">Licenciés</a></li>
+									<li><a href="#">Licenciés</a></li>
 									<li><a href="contacts.html">Contacts</a></li>
 						
 								</ul>
@@ -24,7 +26,7 @@
 								<span>Gestions des catégories</span>
 							</li>
 							
-							<li> 
+							<li {% if app.request.get('_route') == 'app_categorie_new' %} class="active"{% endif %}> 
 								<a href="{{path('app_categorie_new')}}"><i class="la la-folder"></i> <span>Ajouter categorie</span></a>
 							</li>
 							

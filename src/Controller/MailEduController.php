@@ -5,11 +5,14 @@ namespace App\Controller;
 use App\Entity\MailEdu;
 use App\Form\MailEduType;
 use App\Repository\MailEduRepository;
+use App\Repository\EducateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Mime\Email;
 
 #[Route('/mail/edu')]
 class MailEduController extends AbstractController
@@ -23,24 +26,47 @@ class MailEduController extends AbstractController
     }
 
     #[Route('/new', name: 'app_mail_edu_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $mailEdu = new MailEdu();
-        $form = $this->createForm(MailEduType::class, $mailEdu);
-        $form->handleRequest($request);
+public function new(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer, EducateurRepository $educateurRepository): Response
+{
+    $mailEdu = new MailEdu();
+    $form = $this->createForm(MailEduType::class, $mailEdu);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($mailEdu);
-            $entityManager->flush();
+    if ($form->isSubmitted() && $form->isValid()) {
+        $educateurs = $form->get('educateur')->getData();
 
-            return $this->redirectToRoute('app_mail_edu_index', [], Response::HTTP_SEE_OTHER);
+        foreach ($educateurs as $educateur) {
+            $email = (new Email())
+                ->from('mathieu@example.com') 
+                //->to($educateur->getEmail())
+                ->to('mat@example.com ')
+                ->subject('ooror')
+                ->text('ofofofofo')
+                ->html('<p>See Twig integration for better HTML integration!</p>');
+
+            $mailer->send($email);
+
+            // Ajoutez l'éducateur au mail avant de le persister
+            $mailEdu->addEducateur($educateur);
         }
 
-        return $this->render('mail_edu/new.html.twig', [
-            'mail_edu' => $mailEdu,
-            'form' => $form,
-        ]);
+        
+
+        // Enregistrez le mail dans la base de données
+        $mailEdu->setDateEnvoi(new \DateTime());
+        $entityManager->persist($mailEdu);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Les e-mails ont été envoyés avec succès.');
+
+        return $this->redirectToRoute('app_mail_edu_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    return $this->render('mail_edu/new.html.twig', [
+        'mail_edu' => $mailEdu,
+        'form' => $form,
+    ]);
+}
 
     #[Route('/{id}', name: 'app_mail_edu_show', methods: ['GET'])]
     public function show(MailEdu $mailEdu): Response

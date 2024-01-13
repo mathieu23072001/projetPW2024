@@ -1,11 +1,99 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New MailEdu{% endblock %}
+{% block title %}Ceci est un test {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    
+{% endblock %}
 
 {% block body %}
-    <h1>Create new MailEdu</h1>
+<!-- Page Content -->
 
-    {{ include('mail_edu/_form.html.twig') }}
+<script>
+    $(document).ready(function() {
+        $('.js-select2').select2();
+    });
 
-    <a href="{{ path('app_mail_edu_index') }}">back to list</a>
+</script>
+
+
+
+
+                <div class="content container-fluid">
+				
+					<!-- Page Header -->
+					<div class="page-header">
+						<div class="row">
+							<div class="col-sm-12">
+								<h3 class="page-title">Composer un mail</h3>
+								<ul class="breadcrumb">
+									<li class="breadcrumb-item"><a href="index.html">Tableau de bord</a></li>
+									<li class="breadcrumb-item active">Mail</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!-- /Page Header -->
+					
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="card">
+								<div class="card-body">
+									{{ form_start(form,{'attr':{'class':'form-horizontal'}}) }}
+										<div class="form-group">
+                                            <label>Educateurs</label>
+											{{ form_widget(form.educateur, {'attr': {'name': 'educateurs[]', 'multiple': 'multiple'}}) }}
+										</div>
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-group">
+													<input type="email" placeholder="Cc" class="form-control">
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<input type="email" placeholder="Bcc" class="form-control">
+												</div>
+											</div>
+										</div>
+										<div class="form-group">
+											{{ form_widget(form.objet) }}
+										</div>
+										<div class="form-group">
+											{{ form_widget(form.message) }}
+										</div>
+										<div class="form-group mb-0">
+											<div class="text-center">
+												<button class="btn btn-primary" type="submit"><span>Send</span> <i class="fa fa-send m-l-5"></i></button>
+                                            
+												<button class="btn btn-success m-l-5" type="button"><span>Draft</span> <i class="fa fa-floppy-o m-l-5"></i></button>
+												<button class="btn btn-success m-l-5" type="button"><span>Delete</span> <i class="fa fa-trash-o m-l-5"></i></button>
+											</div>
+										</div>
+                                        {{ form_end(form) }}
+								</div>
+							</div>
+						</div>
+					</div>
+                </div>
+				<!-- /Page Content -->
+				
+            </div>
+			<!-- /Page Wrapper -->
+			
+        </div>
+		<!-- /Main Wrapper -->
+            
+            
+
+
+
+<!-- /Page Content -->
+
 {% endblock %}

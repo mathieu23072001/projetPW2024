@@ -4,16 +4,18 @@ namespace App\Controller;
 
 use App\Entity\Educateur;
 use App\Form\EducateurType;
-use App\Repository\CategorieRepository;
 use App\Repository\ContactRepository;
-use App\Repository\EducateurRepository;
 use App\Repository\LicencieRepository;
+use App\Repository\CategorieRepository;
+use App\Repository\EducateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Mime\Email;
 
 #[Route('/educateur')]
 class EducateurController extends AbstractController
@@ -81,7 +83,7 @@ class EducateurController extends AbstractController
 
             //$isAdmin = $request->request->get('form')['isAdmin'];
             $isAdmin = $request->request->get('isAdmin');
-            $educateur->setIsAdmin($isAdmin==1 ? 1 : 0);
+            $educateur->setIsAdmin($isAdmin? 1 : 0);
             $educateur->setPwd($hashedPassword);
             $entityManager->persist($educateur);
             $entityManager->flush();
@@ -139,5 +141,34 @@ class EducateurController extends AbstractController
         
         $this->addFlash('delete', 'suppression effectué');
         return $this->redirectToRoute('app_educateur_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/send-email', name: 'send_email', methods: ['POST'])]
+
+    public function sendmail(Request $request, MailerInterface $mailer, EducateurRepository $educateurRepository){
+        
+        // Récupérer les IDs des éducateurs sélectionnés depuis le formulaire
+     $selectedEducateurs = $request->request->get('educateurs', []);
+
+     // Récupérer les entités Educateur en fonction des IDs
+    $educateurs = $educateurRepository->findBy(['id' => $selectedEducateurs]);
+
+    // Envoyer un e-mail à chaque éducateur
+    foreach ($educateurs as $educateur) {
+        $email = (new Email())
+            ->from('votre_email@example.com') // Remplacez par votre adresse e-mail
+            ->to($educateur->getEmail())
+            ->subject('Sujet de l\'e-mail')
+            ->text('Contenu du message : Bonjour ' . $educateur->getPrenom() . '!');
+
+        $mailer->send($email);
+    }
+
+    // Ajouter un message de succès ou de redirection après l'envoi des e-mails
+    $this->addFlash('success', 'Les e-mails ont été envoyés avec succès.');
+
+    return $this->redirectToRoute('app_mail_edu_index');
+
+
     }
 }
