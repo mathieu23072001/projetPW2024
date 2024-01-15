@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/mail/contact')]
+#[Route('/admin/mail/contact')]
 class MailContactController extends AbstractController
 {
     #[Route('/', name: 'app_mail_contact_index', methods: ['GET'])]

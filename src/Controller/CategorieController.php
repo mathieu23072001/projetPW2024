@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
-#[Route('/categorie')]
+#[Route('/admin/categorie')]
 class CategorieController extends AbstractController
 {
     #[Route('/', name: 'app_categorie_index', methods: ['GET'])]

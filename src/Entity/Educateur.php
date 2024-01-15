@@ -15,6 +15,9 @@ class Educateur extends Licencie implements UserInterface, PasswordAuthenticated
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
+    /**
+     * @var string The hashed password
+     */
     #[ORM\Column(length: 255)]
     private ?string $pwd = null;
 
@@ -42,17 +45,9 @@ class Educateur extends Licencie implements UserInterface, PasswordAuthenticated
         return $this;
     }
 
-    public function getPwd(): ?string
-    {
-        return $this->pwd;
-    }
+   
 
-    public function setPwd(string $pwd): static
-    {
-        $this->pwd = $pwd;
-
-        return $this;
-    }
+    
 
     public function isIsAdmin(): ?bool
     {
@@ -85,20 +80,46 @@ class Educateur extends Licencie implements UserInterface, PasswordAuthenticated
         return (string) $this->email;
     }
 
+    /**
+     * @see UserInterface
+     */
+
     public function getRoles(): array
     {
         return $this->isAdmin ? ['ROLE_ADMIN'] : ['ROLE_USER'];
     }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
 
     public function getPassword(): string
     {
         return $this->pwd;
     }
 
+    public function setPassword(string $password): self
+    {
+        $this->pwd = $password;
+
+        return $this;
+    }
+
+    /**
+     * Returning a salt is only needed, if you are not using a modern
+     * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
+     *
+     * @see UserInterface
+     */
+
     public function getSalt(): ?string
     {
         return null;
     }
+
+     /**
+     * @see UserInterface
+     */
 
     public function eraseCredentials()
     {

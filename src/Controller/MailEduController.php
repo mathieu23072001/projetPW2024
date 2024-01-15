@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mime\Email;
 
-#[Route('/mail/edu')]
+#[Route('/admin/mail/edu')]
 class MailEduController extends AbstractController
 {
     #[Route('/', name: 'app_mail_edu_index', methods: ['GET'])]

@@ -17,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Mime\Email;
 
-#[Route('/educateur')]
+#[Route('/admin/educateur')]
 class EducateurController extends AbstractController
 {
     #[Route('/', name: 'app_educateur_index', methods: ['GET'])]
@@ -87,7 +87,7 @@ class EducateurController extends AbstractController
             //$isAdmin = $request->request->get('form')['isAdmin'];
             $isAdmin = $request->request->get('isAdmin');
             $educateur->setIsAdmin($isAdmin? 1 : 0);
-            $educateur->setPwd($hashedPassword);
+            $educateur->setPassword($hashedPassword);
             $entityManager->persist($educateur);
             $entityManager->flush();
              

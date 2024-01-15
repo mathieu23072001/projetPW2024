@@ -1,103 +1,137 @@
-{% extends 'base.html.twig' %}
+<?php
 
-{% block title %}Send Email{% endblock %}
+namespace App\Entity;
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
-            padding: 20px;
+use App\Repository\EducateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: EducateurRepository::class)]
+class Educateur extends Licencie implements UserInterface, PasswordAuthenticatedUserInterface
+{
+    #[ORM\Column(length: 255)]
+    private ?string $email = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $pwd = null;
+
+    #[ORM\Column]
+    private ?bool $isAdmin = null;
+
+    #[ORM\ManyToMany(targetEntity: MailEdu::class, mappedBy: 'educateurs')]
+    private Collection $mailEdus;
+
+    public function __construct()
+    {
+        $this->mailEdus = new ArrayCollection();
+    }
+
+    
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getPwd(): ?string
+    {
+        return $this->pwd;
+    }
+
+    public function setPwd(string $pwd): static
+    {
+        $this->pwd = $pwd;
+
+        return $this;
+    }
+
+    public function isIsAdmin(): ?bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(bool $isAdmin): static
+    {
+        $this->isAdmin = $isAdmin;
+
+        return $this;
+    }
+
+
+
+     /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    // Implémentation des méthodes UserInterface
+
+    public function getUsername(): string
+    {
+        return (string) $this->email;
+    }
+
+    public function getRoles(): array
+    {
+        return $this->isAdmin ? ['ROLE_ADMIN'] : ['ROLE_USER'];
+    }
+
+    public function getPassword(): string
+    {
+        return $this->pwd;
+    }
+
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    public function eraseCredentials()
+    {
+        // Suppression des données sensibles éventuellement stockées
+    }
+
+    /**
+     * @return Collection<int, MailEdu>
+     */
+    public function getMailEdus(): Collection
+    {
+        return $this->mailEdus;
+    }
+
+    public function addMailEdu(MailEdu $mailEdu): static
+    {
+        if (!$this->mailEdus->contains($mailEdu)) {
+            $this->mailEdus->add($mailEdu);
+            $mailEdu->addEducateur($this);
         }
 
-        .email-container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        return $this;
+    }
+
+    public function removeMailEdu(MailEdu $mailEdu): static
+    {
+        if ($this->mailEdus->removeElement($mailEdu)) {
+            $mailEdu->removeEducateur($this);
         }
 
-        h1 {
-            color: #333;
-        }
+        return $this;
+    }
 
-        form {
-            margin-top: 20px;
-        }
 
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input[type="text"],
-        input[type="email"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-        }
-
-        textarea {
-            width: 100%;
-            height: 150px;
-            padding: 8px;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-        }
-
-        .checkbox-group {
-            margin-bottom: 20px;
-        }
-
-        .checkbox-group label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .btn-send {
-            display: inline-block;
-            padding: 10px 15px;
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .btn-send:hover {
-            background-color: #218838;
-        }
-    </style>
-{% endblock %}
-
-{% block body %}
-    <div class="email-container">
-        <h1>Send Email</h1>
-
-        <form method="post">
-            <label for="sender">Your Email:</label>
-            <input type="email" name="sender" id="sender" required>
-
-            <label for="subject">Subject:</label>
-            <input type="text" name="subject" id="subject" required>
-
-            <label for="message">Message:</label>
-            <textarea name="message" id="message" required></textarea>
-
-            <div class="checkbox-group">
-                <label>Recipients:</label>
-                {% for recipient in recipients %}
-                    <input type="checkbox" name="recipients[]" value="{{ recipient.email }}"> {{ recipient.name }} ({{ recipient.email }})<br>
-                {% endfor %}
-            </div>
-
-            <button class="btn-send" type="submit">Send Email</button>
-        </form>
-    </div>
-{% endblock %}
+   
+}
