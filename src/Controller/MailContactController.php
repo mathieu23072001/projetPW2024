@@ -37,7 +37,7 @@ class MailContactController extends AbstractController
     
             foreach ($contacts as $contact) {
                 $email = (new Email())
-                    ->from('admin@example.com') 
+                    ->from($this->getUser()->getEmail()) 
                     ->to($contact->getEmail())
                     ->subject($form->get('objet')->getData())
                     ->text($form->get('message')->getData())

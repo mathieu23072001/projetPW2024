@@ -37,13 +37,7 @@ class EducateurAuthenticator extends AbstractLoginFormAuthenticator
 
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
         ($request->request->get('password', ''));
-       // dd($request);
-       //dd($request->request->get('password', ''));
-
-       //Dump the hashed password for debugging purposes
-        //$hashedPassword = $this->passwordHasher->hashPassword(new Educateur(), $request->request->get('password', ''));
-        //dd(new PasswordCredentials($request->request->get('password', '')));
-        //dd(new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')));
+      
 
         return new Passport(
             new UserBadge($email),
@@ -61,8 +55,18 @@ class EducateurAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        // For example:
-         return new RedirectResponse($this->urlGenerator->generate('app_educateur_dashboard'));
+        $user = $token->getUser();
+
+        if (!$user instanceof Educateur) {
+            return null;
+        }
+        // Check the value of isAdmin
+        if ($user->isIsAdmin()) {
+            return new RedirectResponse($this->urlGenerator->generate('app_educateur_dashboard'));
+        } else {
+
+            return new RedirectResponse($this->urlGenerator->generate('app_not_defined'));
+        }
         //throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }
 
@@ -74,11 +78,6 @@ class EducateurAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
 {
-    // Dump or log the exception message or other relevant information
-    //dump($exception->getMessage());
-   // dump($request);
-
-
     
 
     return new JsonResponse(['message' => $exception->getMessage()], Response::HTTP_UNAUTHORIZED);

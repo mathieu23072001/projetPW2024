@@ -40,7 +40,7 @@ public function new(Request $request, EntityManagerInterface $entityManager, Mai
 
         foreach ($educateurs as $educateur) {
             $email = (new Email())
-                ->from('admin@example.com') 
+                ->from($this->getUser()->getEmail()) 
                 ->to($educateur->getEmail())
                 ->subject($form->get('objet')->getData())
                 ->text($form->get('message')->getData())

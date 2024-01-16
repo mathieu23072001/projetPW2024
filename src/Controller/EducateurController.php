@@ -33,6 +33,8 @@ class EducateurController extends AbstractController
     #[Route('/dashboard', name: 'app_educateur_dashboard', methods: ['GET'])]
     public function dashboard(LicencieRepository $licencieRepository,ContactRepository $contactRepository,CategorieRepository $categorieRepository,EducateurRepository $educateurRepository, EntityManagerInterface $entityManager): Response
     {
+
+        
         $nbreEdu = $educateurRepository->nbEducateur();
         $nbreCat = $categorieRepository->nbCategorie();
         $nbreCont = $contactRepository->nbContact();
@@ -46,7 +48,8 @@ class EducateurController extends AbstractController
             
         ]);
     }
-
+ 
+    
 
     
 
