@@ -24,6 +24,9 @@ class CategorieController extends AbstractController
         ]);
     }
 
+
+    
+
     #[Route('/contact/show/{id}', name: 'app_cat_contact_show', methods: ['GET'])]
 public function contactShow(int $id, LicencieRepository $licencieRepository,CategorieRepository $categorieRepository): Response
 {

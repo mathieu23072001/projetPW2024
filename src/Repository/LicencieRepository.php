@@ -77,6 +77,26 @@ class LicencieRepository extends ServiceEntityRepository
     }
 
 
+
+    /**
+     * Récupérer les contacts d'une certaine catégorie de licenciés.
+     *
+     * @param int $categorieId
+     * @return array
+     */
+    public function finContactsByCategorie(int $categorieId): array
+    {
+        return $this->createQueryBuilder('l')
+            ->select('c')
+            ->join('l.contact', 'c')
+            ->join('l.categorie', 'cat')
+            ->where('cat.id = :categorieId')
+            ->setParameter('categorieId', $categorieId)
+            ->getQuery()
+            ->getResult();
+    }
+
+
     public function getContactsByCategory($categoryId)
 {
     $entityManager = $this->getEntityManager();

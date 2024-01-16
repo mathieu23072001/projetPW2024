@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Contact;
+use App\Entity\Categorie;
 use App\Entity\MailContact;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,11 +24,26 @@ class MailContactType extends AbstractType
                 'class' => 'form-control select2 js-select2', 
                 'placeholder' => 'A',
             ],
+            'required'=>false,
             
             'mapped' => false,
             'multiple' => true,
             'choice_label' => function ($contact) {
                 return $contact->getNom() . ' - ' . $contact->getPrenom() . ' - ' . $contact->getEmail();
+            },
+        ])
+
+        ->add('categorie', EntityType::class, [
+            'class' => Categorie::class,
+            'attr' => [
+                'class' => 'form-control select2 js-select2', 
+                'placeholder' => 'A',
+            ],
+            'required'=>false,
+            'mapped' => false,
+            'multiple' => true,
+            'choice_label' => function ($categorie) {
+                return $categorie->getCode() . ' - ' . $categorie->getNom();
             },
         ])
         

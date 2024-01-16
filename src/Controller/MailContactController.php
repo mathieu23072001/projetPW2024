@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Contact;
 use App\Entity\MailContact;
 use App\Form\MailContactType;
+use App\Repository\LicencieRepository;
 use Symfony\Component\Mime\Email;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\MailContactRepository;
@@ -26,15 +27,17 @@ class MailContactController extends AbstractController
     }
 
     #[Route('/new', name: 'app_mail_contact_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager,MailerInterface $mailer): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,MailerInterface $mailer, LicencieRepository $licencieRepository): Response
     {
         $mailContact = new MailContact();
         $form = $this->createForm(MailContactType::class, $mailContact);
-        $form->handleRequest($request);
+        $form->handleRequest($request); 
 
         if ($form->isSubmitted() && $form->isValid()) {
             $contacts = $form->get('contact')->getData();
-    
+            $categories = $form->get('categorie')->getData();
+
+              if($contacts){
             foreach ($contacts as $contact) {
                 $email = (new Email())
                     ->from($this->getUser()->getEmail()) 
@@ -48,7 +51,75 @@ class MailContactController extends AbstractController
                 // Ajoutez l'éducateur au mail avant de le persister
                 $mailContact->addContact($contact);
             }
+        }
+
+        if ($categories){
+
+            foreach ($categories as $categorie) {
+
+                $licencies = $licencieRepository->findBy(['categorie' => $categorie]);
+                $contacts = [];
     
+                foreach ($licencies as $licencie) {
+                    $contact = $licencie->getContact();
+            
+                    
+                    if ($contact && !in_array($contact, $contacts, true)) {
+                        $contacts[] = $contact;
+                    }
+                }
+    
+             }
+
+             foreach ($contacts as $contact) {
+                $email = (new Email())
+                    ->from($this->getUser()->getEmail()) 
+                    ->to($contact->getEmail())
+                    ->subject($form->get('objet')->getData())
+                    ->text($form->get('message')->getData())
+                    ->html('<p>See Twig integration for better HTML integration!</p>');
+    
+                $mailer->send($email);
+    
+                // Ajoutez l'éducateur au mail avant de le persister
+                $mailContact->addContact($contact);
+            }
+        }
+
+        if ($contacts && $categories) {
+            $contactsFromCategories = [];
+        
+            foreach ($categories as $categorie) {
+                $licencies = $licencieRepository->findBy(['categorie' => $categorie]);
+        
+                foreach ($licencies as $licencie) {
+                    $contact = $licencie->getContact();
+        
+                    if ($contact && !in_array($contact, $contactsFromCategories, true)) {
+                        $contactsFromCategories[] = $contact;
+                    }
+                }
+            }
+        
+            // Fusionner les contacts des deux sources en éliminant les doublons
+            $contacts = array_merge($contacts, $contactsFromCategories);
+            $contacts = array_unique($contacts, SORT_REGULAR);
+        
+            foreach ($contacts as $contact) {
+                $email = (new Email())
+                    ->from($this->getUser()->getEmail())
+                    ->to($contact->getEmail())
+                    ->subject($form->get('objet')->getData())
+                    ->text($form->get('message')->getData())
+                    ->html('<p>See Twig integration for better HTML integration!</p>');
+        
+                $mailer->send($email);
+        
+                // Ajoutez l'éducateur au mail avant de le persister
+                $mailContact->addContact($contact);
+            }
+        }
+        
             
     
             // Enregistrez le mail dans la base de données
