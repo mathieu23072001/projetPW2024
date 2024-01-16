@@ -34,6 +34,12 @@
     {{ message }}
 </div>
 {% endfor %}
+
+{% for message in app.flashes('nothing') %}
+<div class="alert alert-info">
+    {{ message }}
+</div>
+{% endfor %}
 				
 					<!-- Page Header -->
 					<div class="page-header">

@@ -27,9 +27,13 @@ class Educateur extends Licencie implements UserInterface, PasswordAuthenticated
     #[ORM\ManyToMany(targetEntity: MailEdu::class, mappedBy: 'educateurs')]
     private Collection $mailEdus;
 
+    #[ORM\OneToMany(mappedBy: 'educateur', targetEntity: Mail::class)]
+    private Collection $sendMail;
+
     public function __construct()
     {
         $this->mailEdus = new ArrayCollection();
+        $this->sendMail = new ArrayCollection();
     }
 
     
@@ -148,6 +152,36 @@ class Educateur extends Licencie implements UserInterface, PasswordAuthenticated
     {
         if ($this->mailEdus->removeElement($mailEdu)) {
             $mailEdu->removeEducateur($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Mail>
+     */
+    public function getSendMail(): Collection
+    {
+        return $this->sendMail;
+    }
+
+    public function addSendMail(Mail $sendMail): static
+    {
+        if (!$this->sendMail->contains($sendMail)) {
+            $this->sendMail->add($sendMail);
+            $sendMail->setEducateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSendMail(Mail $sendMail): static
+    {
+        if ($this->sendMail->removeElement($sendMail)) {
+            // set the owning side to null (unless already changed)
+            if ($sendMail->getEducateur() === $this) {
+                $sendMail->setEducateur(null);
+            }
         }
 
         return $this;

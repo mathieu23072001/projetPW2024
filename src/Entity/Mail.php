@@ -28,6 +28,9 @@ class Mail
     #[ORM\Column(type: Types::TEXT)]
     private ?string $message = null;
 
+    #[ORM\ManyToOne(inversedBy: 'sendMail')]
+    private ?Educateur $educateur = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -65,6 +68,18 @@ class Mail
     public function setMessage(string $message): static
     {
         $this->message = $message;
+
+        return $this;
+    }
+
+    public function getEducateur(): ?Educateur
+    {
+        return $this->educateur;
+    }
+
+    public function setEducateur(?Educateur $educateur): static
+    {
+        $this->educateur = $educateur;
 
         return $this;
     }
