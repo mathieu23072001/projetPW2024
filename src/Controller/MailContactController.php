@@ -22,8 +22,9 @@ class MailContactController extends AbstractController
     #[Route('/', name: 'app_mail_contact_index', methods: ['GET'])]
     public function index(MailContactRepository $mailContactRepository): Response
     {
+        $mailContacts =$mailContactRepository->findBy(['educateur' => $this->getUser()]);
         return $this->render('mail_contact/index.html.twig', [
-            'mail_contacts' => $mailContactRepository->findAll(),
+            'mail_contacts' => $mailContacts,
         ]);
     }
 

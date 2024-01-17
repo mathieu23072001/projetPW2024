@@ -1,137 +1,15 @@
-<?php
+Madame, Monsieur,
 
-namespace App\Entity;
+Je m'appelle [Votre Nom], étudiant en informatique passionné par le développement web, et je suis actuellement à la recherche d'un stage enrichissant dans le domaine du PHP Symfony. En parcourant votre site et découvrant votre offre de stage, j'ai été immédiatement captivé par votre entreprise et son engagement envers l'innovation et l'excellence technique.
 
-use App\Repository\EducateurRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Doctrine\ORM\Mapping as ORM;
+Avec une solide formation académique en informatique, je possède des compétences approfondies en PHP Symfony, ainsi qu'une expérience pratique à travers mes projets académiques et personnels. Mon intérêt particulier pour [un aspect spécifique de l'entreprise] m'a motivé à postuler chez vous. Nous pourrions ainsi mutualiser nos compétences pour atteindre vos objectifs et contribuer à l'évolution constante de votre entreprise.
 
-#[ORM\Entity(repositoryClass: EducateurRepository::class)]
-class Educateur extends Licencie implements UserInterface, PasswordAuthenticatedUserInterface
-{
-    #[ORM\Column(length: 255)]
-    private ?string $email = null;
+Au cours de mes études, j'ai développé une expertise dans la conception et la mise en œuvre de solutions robustes, en accordant une attention particulière à l'efficacité, la sécurité et la qualité du code. Passionné par l'apprentissage continu, je suis persuadé que rejoindre [Nom de l'entreprise] représenterait une opportunité exceptionnelle pour enrichir mes connaissances et contribuer activement à vos projets novateurs.
 
-    #[ORM\Column(length: 255)]
-    private ?string $pwd = null;
+En tant que jeune professionnel ambitieux, je suis convaincu que mon profil dynamique et ma passion pour le développement web pourraient apporter une valeur ajoutée significative à votre équipe. Je me tiens à votre disposition pour discuter de la manière dont mes compétences et ma motivation correspondent aux besoins de [Nom de l'entreprise] lors d'un entretien.
 
-    #[ORM\Column]
-    private ?bool $isAdmin = null;
+Je vous prie d'agréer, Madame, Monsieur, l'expression de mes salutations distinguées.
 
-    #[ORM\ManyToMany(targetEntity: MailEdu::class, mappedBy: 'educateurs')]
-    private Collection $mailEdus;
-
-    public function __construct()
-    {
-        $this->mailEdus = new ArrayCollection();
-    }
-
-    
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getPwd(): ?string
-    {
-        return $this->pwd;
-    }
-
-    public function setPwd(string $pwd): static
-    {
-        $this->pwd = $pwd;
-
-        return $this;
-    }
-
-    public function isIsAdmin(): ?bool
-    {
-        return $this->isAdmin;
-    }
-
-    public function setIsAdmin(bool $isAdmin): static
-    {
-        $this->isAdmin = $isAdmin;
-
-        return $this;
-    }
-
-
-
-     /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
-
-    // Implémentation des méthodes UserInterface
-
-    public function getUsername(): string
-    {
-        return (string) $this->email;
-    }
-
-    public function getRoles(): array
-    {
-        return $this->isAdmin ? ['ROLE_ADMIN'] : ['ROLE_USER'];
-    }
-
-    public function getPassword(): string
-    {
-        return $this->pwd;
-    }
-
-    public function getSalt(): ?string
-    {
-        return null;
-    }
-
-    public function eraseCredentials()
-    {
-        // Suppression des données sensibles éventuellement stockées
-    }
-
-    /**
-     * @return Collection<int, MailEdu>
-     */
-    public function getMailEdus(): Collection
-    {
-        return $this->mailEdus;
-    }
-
-    public function addMailEdu(MailEdu $mailEdu): static
-    {
-        if (!$this->mailEdus->contains($mailEdu)) {
-            $this->mailEdus->add($mailEdu);
-            $mailEdu->addEducateur($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMailEdu(MailEdu $mailEdu): static
-    {
-        if ($this->mailEdus->removeElement($mailEdu)) {
-            $mailEdu->removeEducateur($this);
-        }
-
-        return $this;
-    }
-
-
-   
-}
+Cordialement,
+[Votre Nom]
+[Coordonnées]

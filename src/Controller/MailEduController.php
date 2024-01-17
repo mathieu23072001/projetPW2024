@@ -20,9 +20,9 @@ class MailEduController extends AbstractController
     #[Route('/', name: 'app_mail_edu_index', methods: ['GET'])]
     public function index(MailEduRepository $mailEduRepository): Response
     {
-       // dd($mailEduRepository->findAll());
+        $mail_edus =$mailEduRepository->findBy(['educateur' => $this->getUser()]);
         return $this->render('mail_edu/index.html.twig', [
-            'mail_edus' => $mailEduRepository->findAll(),
+            'mail_edus' => $mail_edus,
         ]);
     }
 
@@ -56,6 +56,7 @@ public function new(Request $request, EntityManagerInterface $entityManager, Mai
 
         // Enregistrez le mail dans la base de données
         $mailEdu->setDateEnvoi(new \DateTime());
+        $mailEdu->setEducateur($this->getUser());
         $entityManager->persist($mailEdu);
         $entityManager->flush();
 
