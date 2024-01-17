@@ -1,6 +1,56 @@
 <?php
 
 include_once '../controllers/AuthController.php';
+require_once("../config/config.php");
+require_once("../classes/models/Connexion.php");
+require_once("../classes/models/CategorieModel.php");
+require_once("../classes/models/ContactModel.php");
+require_once("../classes/models/LicencieModel.php");
+require_once("../classes/dao/LicencieDAO.php");
+require_once("../classes/dao/CategorieDAO.php");
+require_once("../classes/dao/ContactDAO.php");
+require_once("../controllers/LicencieController.php"); 
+
+$categorieDAO=new CategorieDAO(new Connexion());
+$contactDAO=new ContactDAO(new Connexion());
+
+$licencieDAO=new LicencieDAO(new Connexion(),$categorieDAO,$contactDAO);
+$licencieController = new LicencieController($licencieDAO);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['submit'])) {
+        $numeroLicence = $_POST['numeroLicence'];
+        $nom = $_POST['nom'];
+        $prenom = $_POST['prenom'];
+        $categorie = $_POST['categorie'];
+        $contact = $_POST['contact'];
+
+        //$contact = ($contact === '') ? null : $contact;
+
+        $licencieController->addLicencie(
+            (new LicencieModel())
+            ->setNumeroLicence($numeroLicence)
+            ->setNom($nom)
+            ->setPrenom($prenom)
+            ->setCategorie($categorieDAO->getCategorie($categorie))
+            ->setContact($contactDAO->getContact($contact))
+        );
+    }
+
+    if (isset($_POST['logout'])) {
+        AuthController::logout();
+    }
+}
+
+if (isset($_GET['id'])) {
+    $licencieController->deleteLicencie($_GET['id']);
+    unset($_GET['id']);
+    header('Location: ../views/licencieView.php');
+}
+if (isset($_GET['modify'])) {
+    $licencieController->modifyBack();
+}
+
 
 class LicencieController {
 
@@ -8,6 +58,17 @@ class LicencieController {
 
     public function __construct($licencieDAO) {
         $this->licencieDAO = $licencieDAO;
+    }
+
+    public function modifyBack() {
+        if (!AuthController::isUserLoggedIn()) {
+            // Rediriger vers la page de connexion s'il n'est pas connecté
+            header('Location: ../views/login.php');
+            exit;
+        }
+        $_SESSION['modify_licencie'] = $_GET['modify'];
+        unset($_GET['modify']);
+        header('Location: ../views/licencieView.php');
     }
 
     // Afficher la liste des licenciés
@@ -44,7 +105,8 @@ class LicencieController {
             // Rediriger vers la liste des licenciés après l'ajout
            // header('Location: liste_licencies.php');
            echo "enregistrement réussi";
-            exit;
+           header('Location: ../views/licencieView.php');
+            return true;
         } else {
             echo "enregistrement echoué";
         }
@@ -93,7 +155,7 @@ class LicencieController {
             // Rediriger vers la liste des licenciés après la suppression
             //header('Location: liste_licencies.php');
             echo "licencie supprimé";
-            exit;
+            return true;
         } else {
             echo "erreur de suppression";
         }
@@ -122,23 +184,6 @@ class LicencieController {
     }
 }
 
-require_once("../config/config.php");
-require_once("../classes/models/Connexion.php");
-require_once("../classes/models/LicencieModel.php");
-require_once("../classes/models/CategorieModel.php");
-require_once("../classes/models/ContactModel.php");
-require_once("../classes/dao/LicencieDAO.php");
-require_once("../classes/dao/CategorieDAO.php");
-require_once("../classes/dao/ContactDAO.php");
-
-
-$categorieDAO=new CategorieDAO(new Connexion());
-$contactDAO=new ContactDAO(new Connexion());
-
-$licencieDAO=new LicencieDAO(new Connexion(),$categorieDAO,$contactDAO);
-
-$licencieController = new LicencieController($licencieDAO);
-
 // tester la création d'un licencié
 
 $contactData = [
@@ -162,7 +207,7 @@ $licencieData = [
 ];
 
 
-$contact = new ContactModel();
+/*$contact = new ContactModel();
 $contact->setNom($contactData['nom'])
     ->setPrenom($contactData['prenom'])
     ->setEmail($contactData['email'])
@@ -207,7 +252,7 @@ foreach ($licencies as $licencie) {
     
     </li>";
 }
-echo "</ul>";
+echo "</ul>"; */
 
 
 ?>

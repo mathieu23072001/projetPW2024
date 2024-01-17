@@ -71,9 +71,9 @@ class EducateurDAO implements DaoInterface {
 
             // Vérifier si le numéro de licence existe déjà
             if ($this->isNumeroLicenceExists($educateur->getNumeroLicence())) {
-              
+                $this->modify($educateur);
                 echo "Erreur: Numéro de licence déjà existant.";
-                return false;
+                return true;
             }
 
             
@@ -146,7 +146,7 @@ $stmt->execute([
                 $stmt->execute([
                     $educateur->getNom(),
                     $educateur->getPrenom(),
-                    $educateur->getContact()->getId(),
+                    $educateur->getContact()?->getId(),
                     $educateur->getCategorie()->getCode(),
                     $educateur->getEmail(),
                 //    // $hashedPassword,

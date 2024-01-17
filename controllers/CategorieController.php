@@ -1,5 +1,38 @@
 <?php
 include_once '../controllers/AuthController.php';
+require_once("../config/config.php");
+require_once("../classes/models/Connexion.php");
+require_once("../classes/models/CategorieModel.php");
+require_once("../classes/dao/CategorieDAO.php");
+
+$categorieDAO=new CategorieDAO(new Connexion());
+
+$categorieController = new CategorieController($categorieDAO);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['submit'])) {
+        $code = $_POST['code'];
+        $nom = $_POST['nom'];
+        $categorieController->addCategorie([
+            'code' => $code, 
+            'nom' => $nom
+            ]
+        );
+    }
+
+    if (isset($_POST['logout'])) {
+        AuthController::logout();
+    }
+}
+
+if (isset($_GET['code'])) {
+    $categorieController->deleteCategorie($_GET['code']);
+    unset($_GET['code']);
+    header('Location: ../views/categorieView.php');
+}
+if (isset($_GET['modify'])) {
+    $categorieController->modifyBack();
+}
 
 class CategorieController {
 
@@ -7,6 +40,17 @@ class CategorieController {
 
     public function __construct($categorieDAO) {
         $this->categorieDAO = $categorieDAO;
+    }
+
+    public function modifyBack() {
+        if (!AuthController::isUserLoggedIn()) {
+            // Rediriger vers la page de connexion s'il n'est pas connecté
+            header('Location: ../views/login.php');
+            exit;
+        }
+        $_SESSION['modify_category'] = $_GET['modify'];
+        unset($_GET['modify']);
+        header('Location: ../views/categorieView.php');
     }
 
     // Afficher la liste des catégories
@@ -40,7 +84,7 @@ class CategorieController {
 
         if ($success) {
             // Rediriger vers la liste des catégories après l'ajout
-           // header('Location: ../views/categorie/List.php');
+            header('Location: ../views/categorieView.php');
            echo "categorie créé";
             exit;
         } else {
@@ -68,7 +112,6 @@ class CategorieController {
             } else {
                 echo "Erreur lors de la mise à jour de la categorie.";
             }
-
         }else{
             echo "categorie non trouvé";
         }
@@ -93,7 +136,7 @@ class CategorieController {
     }
 }
 
-require_once("../config/config.php");
+/*require_once("../config/config.php");
 require_once("../classes/models/Connexion.php");
 require_once("../classes/models/CategorieModel.php");
 require_once("../classes/dao/CategorieDAO.php");
@@ -130,7 +173,7 @@ $cats= $categorieController->showList();
 foreach ($cats as $cat) {
     echo "<li>{$cat->getCode()} (libelle: {$cat->getNom()})</li>";
 }
-echo "</ul>";
+echo "</ul>";*/
 
 
 

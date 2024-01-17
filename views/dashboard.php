@@ -12,7 +12,7 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Dashboard</a>
+    <a class="navbar-brand" href="../views/dashboard.php">Dashboard</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -36,7 +36,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Catégories</h5>
                     <p class="card-text">Gérer les catégories ici.</p>
-                    <a href="../views/categorie/List.php" class="btn btn-primary">Voir les catégories</a>
+                    <a href="../views/categorieView.php" class="btn btn-primary">Voir les catégories</a>
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Contacts</h5>
                     <p class="card-text">Gérer les contacts ici.</p>
-                    <a href="#" class="btn btn-primary">Voir les contacts</a>
+                    <a href="../views/contactView.php" class="btn btn-primary">Voir les contacts</a>
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Licenciés</h5>
                     <p class="card-text">Gérer les licenciés ici.</p>
-                    <a href="#" class="btn btn-primary">Voir les licenciés</a>
+                    <a href="../views/licencieView.php" class="btn btn-primary">Voir les licenciés</a>
                 </div>
             </div>
         </div>
@@ -64,15 +64,12 @@
                 <div class="card-body">
                     <h5 class="card-title">Educateurs</h5>
                     <p class="card-text">Gérer les educteurs ici.</p>
-                    <a href="#" class="btn btn-primary">Voir les educateurs</a>
+                    <a href="../views/educateurView.php" class="btn btn-primary">Voir les educateurs</a>
                 </div>
             </div>
         </div>
 
-        <form action="../controllers/HomeController.php" method="post" enctype="multipart/form-data">
-    <input type="file" name="csv_file" accept=".csv">
-    <button type="submit">Importer</button>
-</form>
+        
 
     </div>
 </div>

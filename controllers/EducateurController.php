@@ -1,5 +1,68 @@
 <?php
 include_once '../controllers/AuthController.php';
+require_once("../config/config.php");
+require_once("../classes/models/Connexion.php");
+require_once("../classes/models/EducateurModel.php");
+require_once("../classes/models/CategorieModel.php");
+require_once("../classes/models/ContactModel.php");
+require_once("../classes/models/EducateurModel.php");
+require_once("../classes/dao/EducateurDAO.php");
+require_once("../classes/dao/CategorieDAO.php");
+require_once("../classes/dao/ContactDAO.php");  
+
+$contactDAO=new ContactDAO(new Connexion());
+$categorieDAO=new CategorieDAO(new Connexion());
+
+$educateurDAO=new EducateurDAO(new Connexion(), $categorieDAO, $contactDAO);
+
+$contacts = $contactDAO->list();
+$categories = $categorieDAO->list();
+
+
+$educateurController = new EducateurController($educateurDAO);
+$numeroLicence= '';
+$nom = '';
+$prenom = '';
+$category = null;
+$contact0 = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['submit'])) {
+        $numeroLicence = $_POST['numeroLicence'];
+        $nom = $_POST['nom'];
+        $prenom = $_POST['prenom'];
+        $categorie = $_POST['categorie'];
+        $contact = $_POST['contact'];
+        $email = $_POST['email'];
+        $pwd = $_POST['pwd'];
+        $isAdmin =$_POST['isAdmin']== "true";
+        //$isAdmin =$_POST['isAdmin'];
+        $educateurController->createEducateur(
+            (new EducateurModel())
+            ->setNumeroLicence($numeroLicence)
+            ->setNom($nom)
+            ->setPrenom($prenom)
+            ->setCategorie($categorieDAO->getCategorie($categorie))
+            ->setContact($contactDAO->getContact($contact))
+            ->setEmail($email)
+            ->setPwd($pwd)
+            ->setIsAdmin($isAdmin)
+        );
+    }
+
+    if (isset($_POST['logout'])) {
+        AuthController::logout();
+    }
+}
+
+if (isset($_GET['id'])) {
+    $educateurController->deleteEducateur($_GET['id']);
+    unset($_GET['id']);
+    header('Location: ../views/educateurView.php');
+}
+if (isset($_GET['modify'])) {
+    $educateurController->modifyBack();
+}
+
 
 
 class EducateurController {
@@ -8,6 +71,17 @@ class EducateurController {
 
     public function __construct($educateurDAO) {
         $this->educateurDAO = $educateurDAO; 
+    }
+
+    public function modifyBack() {
+        if (!AuthController::isUserLoggedIn()) {
+            // Rediriger vers la page de connexion s'il n'est pas connecté
+            header('Location: ../views/login.php');
+            exit;
+        }
+        $_SESSION['modify_educateur'] = $_GET['modify'];
+        unset($_GET['modify']);
+        header('Location: ../views/educateurView.php');
     }
 
 
@@ -39,6 +113,7 @@ class EducateurController {
             // Rediriger vers la liste des licenciés après l'ajout
            // header('Location: liste_licencies.php');
            echo "enregistrement réussi";
+           header('Location: ../views/educateurView.php');
             exit;
         } else {
             echo "enregistrement echoué";
@@ -97,18 +172,10 @@ class EducateurController {
     }
 }
 
-require_once("../config/config.php");
-require_once("../classes/models/Connexion.php");
-require_once("../classes/models/EducateurModel.php");
-require_once("../classes/models/CategorieModel.php");
-require_once("../classes/models/ContactModel.php");
-require_once("../classes/models/LicencieModel.php");
-require_once("../classes/dao/EducateurDAO.php");
-require_once("../classes/dao/CategorieDAO.php");
-require_once("../classes/dao/ContactDAO.php");  
 
 
-$categorieDAO=new CategorieDAO(new Connexion());
+
+/*$categorieDAO=new CategorieDAO(new Connexion());
 $contactDAO=new ContactDAO(new Connexion());
 
 $educateurDAO=new EducateurDAO(new Connexion(),$categorieDAO,$contactDAO);
@@ -184,4 +251,4 @@ foreach ($educateurs as $educateur) {
     
     </li>";
 }
-echo "</ul>";
+echo "</ul>"; */

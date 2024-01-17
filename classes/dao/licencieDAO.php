@@ -75,9 +75,9 @@ public function getLicencieByNumeroLicence($numeroLicence)
 
             // Vérifier si le numéro de licence existe déjà
             if ($this->isNumeroLicenceExists($licencie->getNumeroLicence())) {
-            
                 echo "Erreur: Numéro de licence déjà existant.";
-                return false;
+                $this->modify($licencie);
+                return true;
             }
     // Vérifier si le code de la catégorie existe déjà
     $existingCategorie = $this->categorieDAO->getCategorie($licencie->getCategorie()->getCode());
@@ -96,7 +96,7 @@ public function getLicencieByNumeroLicence($numeroLicence)
             $licencie->getContact()->getId()
            
         );
-        var_dump($existingContact);
+       // var_dump($existingContact);
 
         if ($existingContact) {
             $licencie->setContact($existingContact);
@@ -128,7 +128,7 @@ public function getLicencieByNumeroLicence($numeroLicence)
         if($licencie instanceof LicencieModel){
         try {
             $stmt = $this->connexion->pdo->prepare("UPDATE licencie SET nom = ?,prenom = ?,idcontact = ?,idcategorie = ?,email=?,pwd=?,isAdmin=? WHERE numeroLicence = ?");
-            $stmt->execute([$licencie->getNom(), $licencie->getPrenom(),$licencie->getContact()->getId(),$licencie->getCategorie()->getCode(),null,null,null,$licencie->getNumeroLicence()]);
+            $stmt->execute([$licencie->getNom(), $licencie->getPrenom(),$licencie->getContact()?->getId(),$licencie->getCategorie()->getCode(),null,null,null,$licencie->getNumeroLicence()]);
             return true;
         } catch (PDOException $e) {
             
@@ -179,16 +179,11 @@ public function getLicencieByNumeroLicence($numeroLicence)
                 $result = $stmt0->fetchAll(PDO::FETCH_ASSOC)[0];
                 $licencie->setCategorie($this->categorieDAO->getCategorie($result['idcategorie']));
                 $licencie->setContact($this->contactDAO->getContact($result['idcontact']));
-
             }
-    
             return $licencies;
         } catch (PDOException $e) {
             return false;
         }
     }
-    
-
-  
 }
 ?>

@@ -44,38 +44,29 @@ class CategorieDAO implements DaoInterface {
         }
     }
 
-    
+
     public function create($categorie) {
-       
-        
         if($categorie instanceof CategorieModel){
             $pdo = $this->connexion->pdo;
-           
-          
-        try {
-
-             // Vérifier si le code de la catégorie existe déjà
-             if ($this->isCategorieExists($categorie->getCode())) {
-    
-                echo "Erreur: Code de catégorie déjà existant.";
+            try {
+                // Vérifier si le code de la catégorie existe déjà
+                if ($this->isCategorieExists($categorie->getCode())) {
+                    $this->modify($categorie);
+                    return true;
+                }
+                ///$pdo->beginTransaction();
+                $stmt = $pdo->prepare("INSERT INTO categorie(code,nom) VALUES (?, ?)");
+                $stmt->execute([$categorie->getCode(), $categorie->getNom()]);
+                //$pdo->commit();
+                return true;
+            } catch (PDOException $e) {
+            
+            // $pdo->rollBack();
                 return false;
             }
-    
-
-
-            ///$pdo->beginTransaction();
-            $stmt = $pdo->prepare("INSERT INTO categorie(code,nom) VALUES (?, ?)");
-            $stmt->execute([$categorie->getCode(), $categorie->getNom()]);
-            //$pdo->commit();
-            return true;
-        } catch (PDOException $e) {
-          
-           // $pdo->rollBack();
-            return false;
+        } else {
+            echo "ecehec enregistrement";
         }
-    } else {
-        echo "ecehec enregistrement";
-    }
     }
 
     public function modify ($categorie){

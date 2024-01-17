@@ -9,31 +9,31 @@ class ContactDAO implements DaoInterface {
 
 
 
-//     public function getContact(String $nom, String $prenom, String $email, String $telephone): ?ContactModel
-// {
-//     try {
-//         $stmt = $this->connexion->pdo->prepare("SELECT * FROM contact WHERE nom = ? AND prenom = ? AND email = ? AND telephone = ?");
-//         $stmt->execute([$nom, $prenom, $email, $telephone]);
-//         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+public function getContactByEmailAndTelephone(String $email, String $telephone): ?ContactModel
+ {
+        try {
+         $stmt = $this->connexion->pdo->prepare("SELECT * FROM contact WHERE email = ? AND telephone = ?");
+         $stmt->execute([$email, $telephone]);
+         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-//         if ($row) {
-//             $contact = new ContactModel();
-//             $contact->setId($row['id']);
-//             $contact->setNom($row['nom']);
-//             $contact->setPrenom($row['prenom']);
-//             $contact->setEmail($row['email']);
-//             $contact->setTelephone($row['telephone']);
+         if ($row) {
+             $contact = new ContactModel();
+             $contact->setId($row['id']);
+             $contact->setNom($row['nom']);
+             $contact->setPrenom($row['prenom']);
+             $contact->setEmail($row['email']);
+             $contact->setTelephone($row['telephone']);
 
-//             return $contact;
-//         } else {
-//             // Retourner null si aucun contact n'est trouvé
-//             return null;
-//         }
-//     } catch (PDOException $e) {
-//         // Gérer les erreurs de récupération ici
-//         return null;
-//     }
-// }
+             return $contact;
+         } else {
+             // Retourner null si aucun contact n'est trouvé
+             return null;
+         }
+     } catch (PDOException $e) {
+         // Gérer les erreurs de récupération ici
+         return null;
+     }
+ }
 
 public function getContact($id)
 {
@@ -82,15 +82,13 @@ public function isContactExists($contact) {
         if($contact instanceof ContactModel){
           
         try {
-
              // Vérifier si le contact existe déjà
              if ($this->isContactExists($contact)) {
-                
-                echo "Un contact avec le meme email ou numero de telephone existe déja";
-                return false;
-                
+                $contact->setId($this->getContactByEmailAndTelephone($contact->getEmail(), $contact->getTelephone())->getId());
+                $this->modify($contact);
+                echo "Contact  enregistrement";
+                return true;
             }
-           
             $stmt = $this->connexion->pdo->prepare("INSERT INTO contact(nom,prenom,email,telephone) VALUES (?, ?,?,?)");
             $stmt->execute([$contact->getNom(), $contact->getPrenom(),$contact->getEmail(),$contact->getTelephone()]);
             
@@ -107,10 +105,9 @@ public function isContactExists($contact) {
     public function modify ($contact){
         if($contact instanceof ContactModel){
         try {
-
-           
             $stmt = $this->connexion->pdo->prepare("UPDATE contact SET nom = ?, prenom = ? , email= ?, telephone = ? WHERE id = ?");
             $stmt->execute([$contact->getNom(), $contact->getPrenom(),$contact->getEmail(),$contact->getTelephone(), $contact->getId()]);
+            var_dump($contact);
             return true;
         } catch (PDOException $e) {
            

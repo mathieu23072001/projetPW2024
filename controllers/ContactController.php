@@ -1,5 +1,41 @@
 <?php
 include_once '../controllers/AuthController.php';
+require_once("../config/config.php");
+require_once("../classes/models/Connexion.php");
+require_once("../classes/models/ContactModel.php");
+require_once("../classes/dao/ContactDAO.php");
+
+$contactDAO=new ContactDAO(new Connexion());
+$contactController = new ContactController($contactDAO);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['submit'])) {
+        $nom = $_POST['nom'];
+        $prenom = $_POST['prenom'];
+        $email = $_POST['email'];
+        $telephone = $_POST['telephone'];
+        $contactController->addContact([
+            'nom' => $nom, 
+            'prenom' => $prenom,
+            'email' => $email, 
+            'telephone' => $telephone
+            ]
+        );
+    }
+
+    if (isset($_POST['logout'])) {
+        AuthController::logout();
+    }
+}
+
+if (isset($_GET['id'])) {
+    $contactController->deleteContact($_GET['id']);
+    unset($_GET['id']);
+    header('Location: ../views/contactView.php');
+}
+if (isset($_GET['modify'])) {
+    $contactController->modifyBack();
+}
 
 class ContactController {
 
@@ -7,6 +43,17 @@ class ContactController {
 
     public function __construct($contactDAO) {
         $this->contactDAO = $contactDAO;
+    }
+
+    public function modifyBack() {
+        if (!AuthController::isUserLoggedIn()) {
+            // Rediriger vers la page de connexion s'il n'est pas connecté
+            header('Location: ../views/login.php');
+            exit;
+        }
+        $_SESSION['modify_contact'] = $_GET['modify'];
+        unset($_GET['modify']);
+        header('Location: ../views/contactView.php');
     }
 
     // Afficher la liste des contacts
@@ -39,8 +86,8 @@ class ContactController {
 
         $success = $this->contactDAO->create($contact);
         if ($success) {
-            
             echo "contact ajouté";
+            header('Location: ../views/contactView.php');
             exit;
         } else {
             echo "erreur lors de l'ajout";
@@ -98,18 +145,9 @@ class ContactController {
     }
 }
 
-require_once("../config/config.php");
-require_once("../classes/models/Connexion.php");
-require_once("../classes/models/ContactModel.php");
-require_once("../classes/dao/ContactDAO.php");
-
-$contactDAO=new ContactDAO(new Connexion());
-
-$contactController = new ContactController($contactDAO);
-
 // tester la création d'un contact
 
-$contactData = [
+/* $contactData = [
     'nom' => 'Robert',
     'prenom'=> 'Fabrice',
     'email'=>  'fab@gmail.com',
@@ -142,7 +180,7 @@ $conts= $contactController->showList();
 foreach ($conts as $cont) {
     echo "<li>{$cont->getNom()} (prenom: {$cont->getEmail()})</li>";
 }
-echo "</ul>";
+echo "</ul>"; */
 
 
 
