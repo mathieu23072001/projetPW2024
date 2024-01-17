@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 03 jan. 2024 à 00:00
+-- Généré le : mer. 17 jan. 2024 à 15:43
 -- Version du serveur : 10.4.27-MariaDB
 -- Version de PHP : 8.2.0
 
@@ -37,13 +37,13 @@ CREATE TABLE `categorie` (
 --
 
 INSERT INTO `categorie` (`code`, `nom`) VALUES
-('A', 'Catégorie A'),
-('MDC', 'medical'),
-('Mdv', 'medieval'),
+('44', 'huji'),
+('4444444', 'huji'),
+('Mdv', 'med'),
+('new1', 'new'),
 ('RH', 'rsHH'),
-('Rzert', 'Ressourcehumaine'),
-('SH', 'Shonen'),
-('TZTZT', 'jijij');
+('Rzert', 'RessourceHHH'),
+('SH', 'Shonen');
 
 -- --------------------------------------------------------
 
@@ -109,17 +109,16 @@ CREATE TABLE `licencie` (
 --
 
 INSERT INTO `licencie` (`numeroLicence`, `nom`, `prenom`, `idcontact`, `idcategorie`, `email`, `pwd`, `isAdmin`) VALUES
-(5, 'Yao', 'phillipe', NULL, 'RH', 'yao@gmail.com', '$2y$10$UlRBl9DF8kjGfeJWRvd8reOY2/K0GFA1LEeeeBuq.RslfncnIZyv.', 1),
-(2001, 'Aka', 'Angelic', 35, 'SH', 'ange@gmail.com,', '$2y$10$j6UMb6NwckndYewyvk5DS.XZFSST4Jzk6iuKrGhBO8aP/BIJv5IXu', 1),
-(123456, 'Durand', 'Alissou', 35, 'SH', NULL, NULL, NULL),
-(200113, 'abalaa', 'aba', 26, 'TZTZT', 'aa@gmail.com', '123', 1),
-(451144, 'mathieu', 'abalala', 32, 'Mdv', NULL, NULL, NULL),
-(1234098, 'Koulevo', 'mathias', 26, 'RH', 'mathias@gmail.com', '123', 1),
+(123456, 'Durand', 'Alissaa', NULL, 'RH', NULL, NULL, NULL),
+(451144, 'mathieu', 'abalala', NULL, 'Mdv', NULL, NULL, NULL),
 (2001144, 'mathieu', 'aba', 32, 'Rzert', NULL, NULL, NULL),
 (4561144, 'mathaaa', 'roger', 32, 'Mdv', NULL, NULL, NULL),
+(7663838, 'IZIZIZOZO', 'matyye', NULL, '44', 'jsus@gmail.com', '$2y$10$J6y3igS8Rjb7egzdmitru.fcSoIypo1MTZhVRcr3kLzL6lzeiIBvu', 0),
 (22001144, 'mathieu', 'abalala', 32, 'Rzert', NULL, NULL, NULL),
-(672430097, 'Lamboni', 'heros', 30, 'Rzert', 'kokou@gmail.com', '123', 0),
-(673408263, 'kolani', 'jean', 30, 'Rzert', 'jean@gmail.com', '123', 0);
+(22032546, 'admin', 'admin', 26, 'new1', 'admin@gmail.com', '$2y$10$69GkZ5nrkh7j5.mjZO2ccOC/C6mSqXtTbvNccbsKwtx4U7SUn1lCy', 1),
+(88383838, 'aa', 'abalooo', 26, '44', 'aaa@gmail.com', '$2y$10$tqvmL/nhEcEEW/v8BbekLu44OA1drGLvDaCGvXEIKaEezUSyPPgyi', 1),
+(900534267, 'Senou', 'didier', 30, '44', 'didier@gmail.com', '$2y$10$yt8S3I4zYpa1pkl1fT69yeinvH.SX144sHeTB1I.0Gr1Q5AyAABwG', 0),
+(2147483647, 'AFZt', 'iouuo', 26, '44', 'zkz@gmail.com', '$2y$10$s/8d3m6nNBw328gTsdXrROQ5JKtfMT86ATw84APCukILFb/RaPGBq', 0);
 
 --
 -- Index pour les tables déchargées
